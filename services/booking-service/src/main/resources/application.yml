@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: booking-service
+
+  # Enable Java 21 Virtual Threads for massive concurrency
+  threads:
+    virtual:
+      enabled: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379

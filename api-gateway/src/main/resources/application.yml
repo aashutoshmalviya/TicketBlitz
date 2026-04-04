@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cloud:
+    gateway:
+      # --- CORS Configuration ---
+      # Notice how globalcors is indented exactly the same as 'server'
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200" # Your future Angular app
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+
+      # --- Routing & Rate Limiting ---
+      server:
+        webflux:
+          routes:
+            # 1. THE BOOKING SERVICE (Secure + Rate Limited)
+            - id: booking-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/tickets/**
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 5
+                    redis-rate-limiter.burstCapacity: 10
+                    key-resolver: "#{@userIpKeyResolver}"
+
+            # 2. THE CATALOG SERVICE (Public - No Rate Limit needed for now)
+            - id: catalog-service
+              uri: http://localhost:8083
+              predicates:
+                - Path=/api/catalog/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:public_key.pem
