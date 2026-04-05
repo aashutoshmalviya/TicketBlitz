@@ -11,13 +11,12 @@ import java.time.LocalDateTime;
 public class Event {
 
     @Id
-    private String id; // We use String so we can keep our "101" ID from earlier
+    private String id;
     private String name;
     private String venue;
     private LocalDateTime eventDate;
     private BigDecimal price;
 
-    // Default constructor for JPA
     public Event() {}
 
     public Event(String id, String name, String venue, LocalDateTime eventDate, BigDecimal price) {
@@ -28,7 +27,6 @@ public class Event {
         this.price = price;
     }
 
-    // Getters and Setters (Omitted for brevity, please generate them in your IDE)
     public String getId() { return id; }
     public String getName() { return name; }
     public String getVenue() { return venue; }

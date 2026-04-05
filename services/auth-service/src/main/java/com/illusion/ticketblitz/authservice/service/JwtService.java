@@ -21,33 +21,32 @@ public class JwtService {
     }
 
     private PrivateKey loadPrivateKey() throws Exception {
-        // Load the key from the resources folder
+        // Load RSA private key from classpath - must be PKCS#8 format
         InputStream is = getClass().getClassLoader().getResourceAsStream("private_key_pkcs8.pem");
         if (is == null) throw new RuntimeException("Private key not found!");
 
         String key = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 
-        // Strip the header, footer, and newlines
+        // Strip PEM headers/footers and decode base64
         String privateKeyPEM = key
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
                 .replaceAll("\\s", "");
 
-        // Decode and generate the RSA Key object
         byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
     }
 
     public String generateToken(String username, String role) {
-        long expirationTime = 1000 * 60 * 60; // 1 Hour
+        long expirationTime = 1000 * 60 * 60; // Token expiration: 1 hour
 
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(privateKey) // SIGNED WITH ASYMMETRIC PRIVATE KEY
+                .signWith(privateKey) // RSA signature - public key validation at gateway
                 .compact();
     }
 }

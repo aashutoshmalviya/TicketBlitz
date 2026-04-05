@@ -15,14 +15,13 @@ public class RedisInventoryManager {
     public boolean reserveSeat(String eventId) {
         String key = "inventory:event:" + eventId;
 
-        // Atomically decrement the inventory
+        // Atomic DECR prevents race conditions during high concurrency
         Long remainingSeats = redisTemplate.opsForValue().decrement(key);
 
         if (remainingSeats != null && remainingSeats >= 0) {
-            // Success: User secured a ticket in the cache
-            return true;
+            return true; // Seat secured
         } else {
-            // Sold Out: Increment it back up to prevent negative numbers
+            // Oversold - rollback to prevent negative inventory
             redisTemplate.opsForValue().increment(key);
             return false;
         }

@@ -16,18 +16,11 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        // 1. Let users hit the Auth Service without a token
                         .pathMatchers("/api/auth/**").permitAll()
-
                         .pathMatchers("/api/catalog/**").permitAll()
-                        // 2. Require a valid JWT for the Booking Service
                         .pathMatchers("/api/tickets/**").authenticated()
-
-                        // 3. Deny everything else by default
                         .anyExchange().authenticated()
                 )
-
-                // 4. Tell Spring to validate tokens using the public key from the YAML
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();

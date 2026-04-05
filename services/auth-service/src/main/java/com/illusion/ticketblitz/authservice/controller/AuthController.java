@@ -1,33 +1,44 @@
 package com.illusion.ticketblitz.authservice.controller;
 
+import com.illusion.ticketblitz.authservice.dto.AuthResponse;
+import com.illusion.ticketblitz.authservice.dto.LoginRequest;
 import com.illusion.ticketblitz.authservice.service.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AuthController(JwtService jwtService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService) {
+        this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String username = credentials.get("username");
-        String password = credentials.get("password");
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            // Triggers Spring Security's authentication flow with our custom UserDetailsService
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
+            );
 
-        // DUMMY CHECK: Replace with Database UserDetailsService later
-        if ("ashutosh".equals(username) && "admin123".equals(password)) {
-            String token = jwtService.generateToken(username, "ROLE_ADMIN");
-            return ResponseEntity.ok(Map.of("token", token));
+            String role = authentication.getAuthorities().iterator().next().getAuthority();
+            String token = jwtService.generateToken(authentication.getName(), role);
+
+            return ResponseEntity.ok(new AuthResponse(token));
+
+        } catch (AuthenticationException e) {
+            // BadCredentialsException or similar - don't leak user existence
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 }
