@@ -1,0 +1,33 @@
+<div class="error-container">
+  <div class="error-content">
+    <div class="error-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10" />
+        <path d="m15 9-6 6" />
+        <path d="m9 9 6 6" />
+      </svg>
+    </div>
+
+    <h1 class="error-title">{{ title }}</h1>
+    <p class="error-message">{{ message }}</p>
+
+    <div class="error-actions">
+      <button (click)="goHome()" class="action-btn primary">
+        Go to Homepage
+      </button>
+      <button (click)="goBack()" class="action-btn secondary">
+        Go Back
+      </button>
+      <button (click)="retry()" *ngIf="showRetry" class="action-btn outline">
+        Try Again
+      </button>
+    </div>
+
+    <div class="error-details" *ngIf="showDetails">
+      <details class="error-accordion">
+        <summary>Technical Details</summary>
+        <pre class="error-stack">{{ errorDetails }}</pre>
+      </details>
+    </div>
+  </div>
+</div>

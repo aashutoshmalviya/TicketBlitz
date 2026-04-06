@@ -1,0 +1,72 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1 class="profile-title">My Profile</h1>
+    <p class="profile-subtitle">Manage your account information</p>
+  </div>
+
+  <div class="profile-content">
+    <div class="profile-card">
+      <h2 class="card-title">Account Information</h2>
+      <form (ngSubmit)="updateProfile()" class="profile-form">
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" id="username" [(ngModel)]="profileData.username" name="username" class="form-input"
+            required />
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" [(ngModel)]="profileData.email" name="email" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="firstName" class="form-label">First Name</label>
+          <input type="text" id="firstName" [(ngModel)]="profileData.firstName" name="firstName" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input type="text" id="lastName" [(ngModel)]="profileData.lastName" name="lastName" class="form-input" />
+        </div>
+
+        <button type="submit" [disabled]="isLoading()" class="update-btn">
+          {{ isLoading() ? 'Updating...' : 'Update Profile' }}
+        </button>
+      </form>
+    </div>
+
+    <div class="profile-card">
+      <h2 class="card-title">Change Password</h2>
+      <form (ngSubmit)="changePassword()" class="profile-form">
+        <div class="form-group">
+          <label for="currentPassword" class="form-label">Current Password</label>
+          <input type="password" id="currentPassword" [(ngModel)]="passwordData.currentPassword" name="currentPassword"
+            class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword" class="form-label">New Password</label>
+          <input type="password" id="newPassword" [(ngModel)]="passwordData.newPassword" name="newPassword"
+            class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm New Password</label>
+          <input type="password" id="confirmPassword" [(ngModel)]="passwordData.confirmPassword" name="confirmPassword"
+            class="form-input" required />
+        </div>
+
+        <button type="submit" [disabled]="isLoadingPassword()" class="update-btn">
+          {{ isLoadingPassword() ? 'Changing...' : 'Change Password' }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="successMessage()" class="success-message">
+    {{ successMessage() }}
+  </div>
+  <div *ngIf="errorMessage()" class="error-message">
+    {{ errorMessage() }}
+  </div>
+</div>

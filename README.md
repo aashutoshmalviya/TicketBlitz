@@ -213,6 +213,7 @@ ticketblitz/
 - ❌ Unit tests for business logic
 - ❌ Integration tests for Kafka flows
 - ❌ E2E tests for booking workflow
+- ❌ Load tests (k6/Gatling) for concurrent ticket drops
 
 **Note:** As a personal project, comprehensive testing is planned for future development.
 

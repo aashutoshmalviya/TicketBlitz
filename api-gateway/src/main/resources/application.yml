@@ -14,7 +14,7 @@ spring:
       # Notice how globalcors is indented exactly the same as 'server'
       globalcors:
         corsConfigurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins:
               - "http://localhost:4200" # Your future Angular app
             allowedMethods:

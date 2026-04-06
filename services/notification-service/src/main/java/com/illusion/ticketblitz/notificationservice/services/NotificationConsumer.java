@@ -1,6 +1,6 @@
 package com.illusion.ticketblitz.notificationservice.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.illusion.ticketblitz.notificationservice.dto.PaymentResultEvent;
 import com.illusion.ticketblitz.notificationservice.service.EmailService;
 import org.slf4j.Logger;

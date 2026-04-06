@@ -1,3 +1,7 @@
 package com.illusion.ticketblitz.authservice.dto;
 
-public record AuthResponse(String token) {}
+// This perfectly matches the root of your Angular interface
+public record AuthResponse(
+        String token,
+        UserDto user
+) {}

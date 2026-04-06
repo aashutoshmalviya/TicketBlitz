@@ -1,0 +1,47 @@
+<div class="search-filters">
+  <div class="filters-header">
+    <h3 class="filters-title">Filter Events</h3>
+    <button (click)="clearFilters()" class="clear-btn">Clear All</button>
+  </div>
+
+  <div class="filters-grid">
+    <div class="filter-group">
+      <label for="search" class="filter-label">Search</label>
+      <input type="text" id="search" [(ngModel)]="filters.searchTerm" (input)="onFiltersChange()"
+        placeholder="Event name or venue..." class="filter-input" />
+    </div>
+
+    <div class="filter-group">
+      <label for="dateFrom" class="filter-label">From Date</label>
+      <input type="date" id="dateFrom" [(ngModel)]="filters.dateFrom" (change)="onFiltersChange()"
+        class="filter-input" />
+    </div>
+
+    <div class="filter-group">
+      <label for="dateTo" class="filter-label">To Date</label>
+      <input type="date" id="dateTo" [(ngModel)]="filters.dateTo" (change)="onFiltersChange()" class="filter-input" />
+    </div>
+
+    <div class="filter-group">
+      <label for="priceMin" class="filter-label">Min Price</label>
+      <input type="number" id="priceMin" [(ngModel)]="filters.priceMin" (input)="onFiltersChange()" placeholder="0"
+        min="0" class="filter-input" />
+    </div>
+
+    <div class="filter-group">
+      <label for="priceMax" class="filter-label">Max Price</label>
+      <input type="number" id="priceMax" [(ngModel)]="filters.priceMax" (input)="onFiltersChange()" placeholder="1000"
+        min="0" class="filter-input" />
+    </div>
+
+    <div class="filter-group">
+      <label for="status" class="filter-label">Status</label>
+      <select id="status" [(ngModel)]="filters.status" (change)="onFiltersChange()" class="filter-select">
+        <option value="">All Status</option>
+        <option value="available">Available</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="sold-out">Sold Out</option>
+      </select>
+    </div>
+  </div>
+</div>
