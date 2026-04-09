@@ -10,13 +10,11 @@ spring:
       port: 6379
   cloud:
     gateway:
-      # --- CORS Configuration ---
-      # Notice how globalcors is indented exactly the same as 'server'
       globalcors:
         corsConfigurations:
-          "[/**]":
+          '[/**]':
             allowedOrigins:
-              - "http://localhost:4200" # Your future Angular app
+              - "http://localhost:4200"
             allowedMethods:
               - GET
               - POST
@@ -24,13 +22,14 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
-
+            allowCredentials: true # <-- Add this line
+      # ... rest of your routes ...
       # --- Routing & Rate Limiting ---
       server:
         webflux:
           routes:
             - id: booking-service
-              uri: http://localhost:8081
+              uri: http://booking-service:8081
               predicates:
                 - Path=/api/tickets/**
               filters:
@@ -40,11 +39,11 @@ spring:
                     redis-rate-limiter.burstCapacity: 10
                     key-resolver: "#{@userIpKeyResolver}"
             - id: catalog-service
-              uri: http://localhost:8083
+              uri: http://catalog-service:8083
               predicates:
                 - Path=/api/catalog/**
             - id: auth-service
-              uri: http://localhost:8082
+              uri: http://auth-service:8082
               predicates:
                 - Path=/api/auth/**
   security:
@@ -52,3 +51,11 @@ spring:
       resourceserver:
         jwt:
           public-key-location: classpath:public_key.pem
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

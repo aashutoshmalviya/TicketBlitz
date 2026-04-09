@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './components/nav-bar/navbar.component';
+import { NavbarComponent } from './component/nav-bar/nav-bar';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, NavbarComponent],
   template: `
     <app-navbar></app-navbar>
-    <main class="main-content">
+    <main class="main-content">c
       <router-outlet></router-outlet>
     </main>
   `,

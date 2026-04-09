@@ -3,15 +3,18 @@ target/
 *.class
 *.jar
 *.war
+.mvn/
 
 # IDEs
 .idea/
 *.iml
 .vscode/
 .DS_Store
-
+Thumbs.db
 # Secrets & Infrastructure (CRITICAL)
 *.pem
 *.key
 .env
 infrastructure/init-scripts/
+
+

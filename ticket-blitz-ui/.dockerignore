@@ -1,0 +1,9 @@
+# Exclude build artifacts
+/dist
+/.angular
+
+# Exclude dependencies, as they are installed via "npm ci" in the Dockerfile
+/node_modules
+
+# Exclude miscellaneous development files
+.DS_Store

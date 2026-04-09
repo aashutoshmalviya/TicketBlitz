@@ -1,0 +1,66 @@
+<div class="notifications-container">
+  <div class="notifications-header">
+    <h1 class="notifications-title">Notifications</h1>
+    <div class="header-actions">
+      <button (click)="markAllAsRead()" class="action-btn" [disabled]="unreadCount() === 0">
+        Mark All Read
+      </button>
+      <button (click)="clearAll()" class="action-btn danger">
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <div class="notifications-stats">
+    <div class="stat-item">
+      <span class="stat-number">{{ notifications().length }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{{ unreadCount() }}</span>
+      <span class="stat-label">Unread</span>
+    </div>
+  </div>
+
+  <div class="notifications-list" *ngIf="notifications().length > 0; else emptyState">
+    <div *ngFor="let notification of notifications()" class="notification-card" [class.unread]="!notification.read"
+      (click)="markAsRead(notification)">
+      <div class="notification-icon">
+        <span [class]="'icon-' + notification.type">
+          {{ getIcon(notification.type) }}
+        </span>
+      </div>
+
+      <div class="notification-content">
+        <div class="notification-header">
+          <h3 class="notification-title">{{ notification.title }}</h3>
+          <span class="notification-time">{{
+            formatTime(notification.timestamp)
+            }}</span>
+        </div>
+        <p class="notification-message">{{ notification.message }}</p>
+        <div class="notification-actions" *ngIf="notification.actionText">
+          <button (click)="performAction(notification, $event)" class="action-link">
+            {{ notification.actionText }}
+          </button>
+        </div>
+      </div>
+
+      <div class="notification-controls">
+        <button (click)="deleteNotification(notification, $event)" class="delete-btn" title="Delete notification">
+          ×
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <h3 class="empty-title">No notifications yet</h3>
+      <p class="empty-message">
+        You'll receive notifications about your bookings and events here.
+      </p>
+    </div>
+  </ng-template>
+</div>

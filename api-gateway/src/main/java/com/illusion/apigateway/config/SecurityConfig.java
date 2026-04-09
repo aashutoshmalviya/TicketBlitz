@@ -27,6 +27,7 @@ public class SecurityConfig {
                         // 2. CRITICAL: Let all browser preflight requests pass through immediately
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         // 3. Your public endpoints
+                        .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/catalog/**").permitAll()
                         // 4. Your secured endpoints

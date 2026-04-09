@@ -39,3 +39,11 @@ spring:
         spring.json.trusted.packages: "com.illusion.*"
     template:
       default-topic: order-events
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

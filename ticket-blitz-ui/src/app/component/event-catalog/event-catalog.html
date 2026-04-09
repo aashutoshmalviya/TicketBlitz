@@ -1,0 +1,32 @@
+<div class="my-container">
+  <h1 class="title">Event Catalog</h1>
+  <div class="event-grid">
+    <div
+      *ngFor="let event of events()"
+      class="event-card"
+      (click)="viewEvent(event.id)"
+    >
+      <h2 class="event-title">{{ event.name }}</h2>
+      <p class="event-date">{{ event.date }}</p>
+      <p class="event-price">${{ event.price }}</p>
+      <p class="event-status">Status: {{ event.status }}</p>
+      <button
+        (click)="buyTicket(event.id, $event)"
+        [disabled]="bookingService.bookingState() === 'PROCESSING'"
+        class="buy-button"
+      >
+        {{
+          bookingService.bookingState() === 'PROCESSING'
+            ? 'Processing...'
+            : 'Buy Ticket'
+        }}
+      </button>
+    </div>
+  </div>
+  <div *ngIf="bookingService.bookingState() === 'SUCCESS'" class="success-message">
+    Booking confirmed!
+  </div>
+  <div *ngIf="bookingService.bookingState() === 'FAILED'" class="error-message">
+    Booking failed. Please try again.
+  </div>
+</div>

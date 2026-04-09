@@ -5,70 +5,68 @@ export const routes: Routes = [
   {
     path: 'events',
     loadComponent: () =>
-      import('./components/event-catalog/event-catalog.component').then(
+      import('./component/event-catalog/event-catalog').then(
         (m) => m.EventCatalogComponent,
       ),
   },
   {
     path: 'login',
     loadComponent: () =>
-      import('./components/login/login.component').then(
-        (m) => m.LoginComponent,
-      ),
+      import('./component/login/login').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./components/register/register.component').then(
+      import('./component/register/register').then(
         (m) => m.RegisterComponent,
       ),
   },
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./components/dashboard/dashboard.component').then(
+      import('./component/dashboard/dashboard').then(
         (m) => m.DashboardComponent,
       ),
   },
   {
     path: 'event/:id',
     loadComponent: () =>
-      import('./components/event-detail/event-detail.component').then(
+      import('./component/event-detail/event-detail').then(
         (m) => m.EventDetailComponent,
       ),
   },
   {
     path: 'profile',
     loadComponent: () =>
-      import('./components/profile/profile.component').then(
+      import('./component/profile/profile').then(
         (m) => m.ProfileComponent,
       ),
   },
   {
     path: 'booking/:id',
     loadComponent: () =>
-      import('./components/booking-details/booking-details.component').then(
+      import('./component/booking-details/booking-details').then(
         (m) => m.BookingDetailsComponent,
       ),
   },
   {
     path: 'confirmation',
     loadComponent: () =>
-      import('./components/order-confirmation/order-confirmation.component').then(
+      import('./component/order-confirmation/order-confirmation').then(
         (m) => m.OrderConfirmationComponent,
       ),
   },
   {
     path: 'notifications',
     loadComponent: () =>
-      import('./components/notifications/notifications.component').then(
+      import('./component/notifications/notifications').then(
         (m) => m.NotificationsComponent,
       ),
   },
   {
     path: '**',
     loadComponent: () =>
-      import('./components/error-page/error-page.component').then(
+      import('./component/error-page/error-page').then(
         (m) => m.ErrorPageComponent,
       ),
   },

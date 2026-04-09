@@ -30,3 +30,11 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       properties:
         spring.json.trusted.packages: "com.illusion.*"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
