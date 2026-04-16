@@ -29,7 +29,7 @@ spring:
         webflux:
           routes:
             - id: booking-service
-              uri: http://booking-service:8081
+              uri: http://localhost:8081
               predicates:
                 - Path=/api/tickets/**
               filters:
@@ -39,11 +39,11 @@ spring:
                     redis-rate-limiter.burstCapacity: 10
                     key-resolver: "#{@userIpKeyResolver}"
             - id: catalog-service
-              uri: http://catalog-service:8083
+              uri: http://localhost:8083
               predicates:
                 - Path=/api/catalog/**
             - id: auth-service
-              uri: http://auth-service:8082
+              uri: http://localhost:8082
               predicates:
                 - Path=/api/auth/**
   security:

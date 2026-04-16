@@ -185,10 +185,8 @@ This is a portfolio project demonstrating advanced microservices patterns, showc
 
 ## 👨‍💻 Author
 
-**Ashutosh Malviya**
-_Full Stack Developer_
+**Ashutosh Malviya**  
+_Full Stack Developer & Technical Lead_
 
-- [LinkedIn](https://www.linkedin.com/in/aashutoshmalvi/)
-- [GitHub](https://github.com/your-github-username)
-
-_If you are a recruiter or engineering manager, I am currently seeking roles as a Backend/Full-Stack Engineer. Let's connect!_
+- LinkedIn <!-- Update this link -->
+- GitHub <!-- Update this link -->

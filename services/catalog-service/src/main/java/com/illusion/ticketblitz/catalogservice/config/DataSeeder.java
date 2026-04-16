@@ -24,7 +24,8 @@ public class DataSeeder implements CommandLineRunner {
                     "The Eras Tour",
                     "Wembley Stadium",
                     LocalDateTime.now().plusMonths(2),
-                    new BigDecimal("150.00")
+                    new BigDecimal("150.00"),
+                    5
             ));
             System.out.println("Database seeded with Event 101!");
         }

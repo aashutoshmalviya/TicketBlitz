@@ -7,7 +7,7 @@ import { NavbarComponent } from './component/nav-bar/nav-bar';
   imports: [RouterOutlet, NavbarComponent],
   template: `
     <app-navbar></app-navbar>
-    <main class="main-content">c
+    <main class="main-content">
       <router-outlet></router-outlet>
     </main>
   `,
