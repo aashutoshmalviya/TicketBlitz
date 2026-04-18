@@ -14,10 +14,17 @@ export interface ReserveRequest {
 
 export interface ReserveResponse {
   reservationId: string;
+  status: string;
 }
 
 export interface StatusResponse {
-  status: 'PENDING' | 'CONFIRMED' | 'FAILED';
+  status: 'PROCESSING' | 'CONFIRMED' | 'FAILED' | 'CANCELLED';
 }
 
-export type BookingState = 'IDLE' | 'PROCESSING' | 'SUCCESS' | 'FAILED';
+export type BookingState =
+  | 'IDLE'
+  | 'PROCESSING'
+  | 'SUCCESS'
+  | 'FAILED'
+  | 'UNAUTHORIZED'
+  | 'CANCELLED';

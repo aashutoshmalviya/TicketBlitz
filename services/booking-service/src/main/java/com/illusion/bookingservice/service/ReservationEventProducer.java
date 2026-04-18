@@ -23,9 +23,8 @@ public class ReservationEventProducer {
         this.objectMapper = objectMapper;
     }
 
-    public void publishReservationEvent(String eventId, String userId, Integer quantity) {
+    public void publishReservationEvent(String reservationId,String eventId, String userId, Integer quantity) {
         try {
-            String reservationId = UUID.randomUUID().toString();
             ReservationCreatedEvent event = new ReservationCreatedEvent(reservationId, eventId, userId, quantity);
             String jsonPayload = objectMapper.writeValueAsString(event);
             kafkaTemplate.send(TOPIC, reservationId, jsonPayload);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illusion.bookingservice.dto.PaymentResultEvent;
 import com.illusion.bookingservice.entity.Reservation;
 import com.illusion.bookingservice.repository.ReservationRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -12,16 +13,15 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentResultConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentResultConsumer.class);
     private final ReservationRepository reservationRepository;
     private final ObjectMapper objectMapper;
+    private final RedisInventoryManager inventoryManager;
 
-    public PaymentResultConsumer(ReservationRepository reservationRepository, ObjectMapper objectMapper) {
-        this.reservationRepository = reservationRepository;
-        this.objectMapper = objectMapper;
-    }
+
 
     @KafkaListener(topics = "payment-results", groupId = "booking-group")
     public void consumePaymentResult(String eventJsonPayload) {
@@ -39,6 +39,7 @@ public class PaymentResultConsumer {
                     log.info("Payment completed, reservation confirmed: {}", event.reservationId());
                 } else {
                     reservation.setStatus("CANCELLED");
+                    inventoryManager.releaseSeats(reservation.getEventId(), reservation.getQuantity());
                     log.warn("Payment failed, reservation cancelled: {}", event.reservationId());
                 }
 

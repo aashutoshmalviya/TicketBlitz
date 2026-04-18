@@ -30,7 +30,6 @@ interface Ticket {
   selector: 'app-booking-details',
   standalone: true,
   imports: [CommonModule],
-  template: ``,
   templateUrl: './booking-details.html',
   styleUrls: ['./booking-details.scss'],
 })

@@ -50,7 +50,7 @@ public class ReservationEventConsumer {
                     .userId(event.userId())
                     .amount(totalAmount)
                     .currency("USD")
-                    .status("PENDING")
+                    .status("PROCESSING")
                     .build();
             paymentRepository.save(payment);
 
@@ -65,9 +65,9 @@ public class ReservationEventConsumer {
                 log.error("Payment failed for reservation: {} - {}", event.reservationId(), result.errorMessage());
             }
             paymentRepository.save(payment);
-
+            log.info("status of payment ", payment.getStatus());
             // Publish payment result to trigger downstream processing
-            PaymentResultEvent resultEvent = new PaymentResultEvent(event.reservationId(), payment.getStatus());
+            PaymentResultEvent resultEvent = new PaymentResultEvent(event.reservationId(), payment.getStatus(),event.eventId());
             String resultJson = objectMapper.writeValueAsString(resultEvent);
             kafkaTemplate.send("payment-results", event.reservationId(), resultJson);
             log.info("Published payment result event for reservation: {}", event.reservationId());

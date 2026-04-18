@@ -5,11 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
 import { Event } from '../../models/ticket.model';
 import { BookingService } from '../../services/booking.service';
+import { LoadingComponent } from '../loading/loading';
+import { PopupComponent } from '../popup/popup';
 
 @Component({
   selector: 'app-event-catalog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PopupComponent],
   templateUrl: './event-catalog.html',
   styleUrls: ['./event-catalog.scss'],
 })
@@ -21,14 +23,17 @@ export class EventCatalogComponent implements OnInit {
   events = signal<Event[]>([]);
 
   ngOnInit(): void {
-    this.http.get<Event[]>('/api/catalog/events').pipe(
-      catchError(error => {
-    console.error('API Error:', error);
-    return of([]); 
-  })
-).subscribe((events) => {
-      this.events.set(events);
-    });
+    this.http
+      .get<Event[]>('/api/catalog/events')
+      .pipe(
+        catchError((error) => {
+          console.error('API Error:', error);
+          return of([]);
+        }),
+      )
+      .subscribe((events) => {
+        this.events.set(events);
+      });
   }
 
   viewEvent(eventId: string) {

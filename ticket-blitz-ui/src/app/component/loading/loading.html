@@ -1,9 +1,5 @@
-<div class="loading-container">
-  <div class="loading-spinner">
-    <div class="spinner-ring"></div>
-    <div class="spinner-ring"></div>
-    <div class="spinner-ring"></div>
-    <div class="spinner-ring"></div>
-  </div>
-  <p class="loading-text">{{ message }}</p>
+@if (loadingService.isLoading()) {
+<div class="overlay">
+  <div class="spinner"></div>
 </div>
+}

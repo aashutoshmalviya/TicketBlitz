@@ -9,13 +9,10 @@ import java.time.LocalDateTime;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Reservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String reservationId; // Kafka event correlation ID
     private String eventId;
     private String userId;
     private Integer quantity;
-    private String status; // PENDING_PAYMENT, COMPLETED, FAILED
+    private String status;
     private LocalDateTime createdAt;
 }

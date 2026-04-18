@@ -1,0 +1,52 @@
+@if (status() === 'SUCCESS' || status() === 'FAILED' || status() === 'UNAUTHORIZED' || status() === 'CANCELLED'|| status() === 'PROCESSING') {
+<div class="overlay">
+  <div class="modal">
+
+    @if (status() === 'PROCESSING') {
+      <div class="custom-spinner"></div>
+      <h2>Processing Payment...</h2>
+      <p>Please do not close or refresh this page. Securing your tickets.</p>
+    }
+    @else if (status() === 'SUCCESS') {
+    <div class="icon-container success">
+      <span class="icon">✅</span>
+    </div>
+    <h2>Ticket Confirmed!</h2>
+    <p>Your payment was successful and your ticket is secured.</p>
+    <button class="action-btn" (click)="closeModal.emit()">Awesome</button>
+    }
+
+    @else if (status() === 'FAILED') {
+    <div class="icon-container error">
+      <span class="icon">❌</span>
+    </div>
+    <h2>Booking Failed</h2>
+    <p>We encountered a system error. Please try again later.</p>
+    <button class="close-btn" (click)="closeModal.emit()">Close</button>
+    }
+
+    @else if (status() === 'CANCELLED') {
+    <div class="icon-container cancelled">
+      <span class="icon">⚠️</span>
+    </div>
+    <h2>Reservation Cancelled</h2>
+    <p>Your payment was declined. Your seats have been released back to the public.</p>
+    <button class="close-btn" (click)="closeModal.emit()">Close</button>
+    }
+
+    @else if (status() === 'UNAUTHORIZED') {
+    <div class="icon-container warning">
+      <span class="icon">🔒</span>
+    </div>
+    <h2>Login Required</h2>
+    <p>You must be logged in to reserve tickets. Please log in or create an account.</p>
+
+    <div class="button-group">
+      <button class="close-btn" (click)="closeModal.emit()">Cancel</button>
+      <button class="action-btn" (click)="goToLogin()">Go to Login</button>
+    </div>
+    }
+
+  </div>
+</div>
+}

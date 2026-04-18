@@ -1,4 +1,4 @@
-package com.illusion.bookingservice.dto;
+package com.illusion.ticketblitz.catalogservice;
 
 public record PaymentResultEvent(
         String reservationId,

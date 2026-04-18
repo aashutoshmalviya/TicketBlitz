@@ -49,10 +49,6 @@ public class RedisInventoryManager {
             decrIfPositiveScript,
             Collections.singletonList(key)
         );
-
-        /*return result != null && result == 1L;*/
-
-
         // Cache Hit & Ticket Secured
         if (result != null && result == 1L) {
             return true;
@@ -96,5 +92,15 @@ public class RedisInventoryManager {
             // Unlock
             cacheLock.unlock();
         }
+    }
+    /**
+     * Compensating transaction to release seats back into Redis if payment fails.
+     */
+    public void releaseSeats(String eventId, int quantity) {
+        String key = "inventory:event:" + eventId;
+
+        // Increment the inventory back up
+        redisTemplate.opsForValue().increment(key, quantity);
+        log.info("Released {} seats back to Redis for event {}", quantity, eventId);
     }
 }

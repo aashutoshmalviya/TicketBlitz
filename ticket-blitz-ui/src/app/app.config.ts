@@ -5,13 +5,13 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import {
-  provideHttpClient, 
+  provideHttpClient,
   withFetch,
-  withInterceptors
+  withInterceptors,
 } from '@angular/common/http';
 import { routes } from './app.routes';
-import { AuthInterceptor } from './auth.interceptor';
-
+import { AuthInterceptor } from './core/interceptor/auth.interceptor';
+import { loadingInterceptor } from './core/interceptor/loading.interceptor';
 import {
   provideClientHydration,
   withEventReplay,
@@ -23,6 +23,9 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideClientHydration(withEventReplay()),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([AuthInterceptor, loadingInterceptor]),
+    ),
   ],
 };

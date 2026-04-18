@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LoadingService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-loading',
@@ -9,5 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./loading.scss'],
 })
 export class LoadingComponent {
-  @Input() message = 'Loading...';
+  loadingService = inject(LoadingService);
 }
