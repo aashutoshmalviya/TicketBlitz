@@ -1,59 +1,54 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router'; // Added RouterModule for routerLink
 import { AuthService } from '../../services/auth.service';
-
-interface Booking {
-  id: string;
-  eventName: string;
-  eventDate: string;
-  status: string;
-  quantity: number;
-}
+import { BookingService } from '../../services/booking.service';
+import { Booking } from '../../models/ticket.model';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss'],
 })
 export class DashboardComponent implements OnInit {
   authService = inject(AuthService);
+  bookingService = inject(BookingService);
   router = inject(Router);
 
   bookings = signal<Booking[]>([]);
+  isLoading = signal<boolean>(true);
+
+  upcomingBookings = computed(() => {
+    return this.bookings().filter(
+      (b) => b.eventDate && new Date(b.eventDate) > new Date(),
+    );
+  });
+
+  completedBookings = computed(() => {
+    return this.bookings().filter((b) => b.status === 'CONFIRMED');
+  });
 
   ngOnInit() {
-    if (!this.authService.isLoggedIn()) {
+    const user = this.authService.currentUser();
+
+    if (!user || !user.id) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Mock data - in real app, fetch from API
-    this.bookings.set([
-      {
-        id: '1',
-        eventName: 'Summer Music Festival',
-        eventDate: '2024-07-15',
-        status: 'confirmed',
-        quantity: 2,
+    // Fetch REAL data from the backend
+    this.bookingService.getUserBookings(user.id).subscribe({
+      next: (data) => {
+        this.bookings.set(data);
+        this.isLoading.set(false);
       },
-      {
-        id: '2',
-        eventName: 'Tech Conference 2024',
-        eventDate: '2024-08-20',
-        status: 'pending',
-        quantity: 1,
+      error: (err) => {
+        console.error('Failed to load bookings:', err);
+        // You might want to set an error state here later
+        this.isLoading.set(false);
       },
-    ]);
-  }
-
-  upcomingBookings() {
-    return this.bookings().filter((b) => new Date(b.eventDate) > new Date());
-  }
-
-  completedBookings() {
-    return this.bookings().filter((b) => b.status === 'confirmed');
+    });
   }
 }

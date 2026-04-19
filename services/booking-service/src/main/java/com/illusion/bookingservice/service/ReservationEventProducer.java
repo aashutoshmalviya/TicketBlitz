@@ -29,7 +29,11 @@ public class ReservationEventProducer {
             String jsonPayload = objectMapper.writeValueAsString(event);
             kafkaTemplate.send(TOPIC, reservationId, jsonPayload);
             log.info("Published reservation event: {} for user: {}", reservationId, userId);
-        } catch (Exception e) {
+        }catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            // Bad JSON? Throw RuntimeException. The ErrorHandler will catch it,
+            // see it's non-retryable, and instantly route to the DLQ.
+            throw new RuntimeException("Fatal deserialization error", e);
+        }catch (Exception e) {
             log.error("Failed to publish reservation event", e);
         }
     }

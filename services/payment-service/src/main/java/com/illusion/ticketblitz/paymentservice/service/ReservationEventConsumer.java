@@ -1,5 +1,6 @@
 package com.illusion.ticketblitz.paymentservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import tools.jackson.databind.ObjectMapper;
 import com.illusion.ticketblitz.paymentservice.dto.PaymentResultEvent;
 import com.illusion.ticketblitz.paymentservice.dto.ReservationCreatedEvent;

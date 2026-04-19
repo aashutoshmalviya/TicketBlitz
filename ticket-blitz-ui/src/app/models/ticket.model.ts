@@ -28,3 +28,12 @@ export type BookingState =
   | 'FAILED'
   | 'UNAUTHORIZED'
   | 'CANCELLED';
+
+export interface Booking {
+  reservationId: string;
+  eventId: string;
+  eventName?: string;
+  eventDate?: string;
+  quantity: number;
+  status: 'PENDING' | 'PROCESSING' | 'CONFIRMED' | 'FAILED' | 'CANCELLED';
+}

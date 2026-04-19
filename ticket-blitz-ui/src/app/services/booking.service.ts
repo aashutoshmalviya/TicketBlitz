@@ -8,8 +8,10 @@ import {
   throwError,
   catchError,
   of,
+  Observable,
 } from 'rxjs';
 import {
+  Booking,
   BookingState,
   ReserveRequest,
   ReserveResponse,
@@ -85,5 +87,10 @@ export class BookingService {
           this.bookingState.set('FAILED');
         },
       });
+  }
+  getUserBookings(userId: string): Observable<Booking[]> {
+    return this.http.get<Booking[]>(
+      `${this.apiUrl}/api/tickets/user/${userId}`,
+    );
   }
 }

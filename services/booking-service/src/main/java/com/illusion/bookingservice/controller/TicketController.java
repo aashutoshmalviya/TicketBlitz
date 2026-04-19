@@ -1,35 +1,33 @@
 package com.illusion.bookingservice.controller;
 
+import com.illusion.bookingservice.client.CatalogServiceClient;
+import com.illusion.bookingservice.dto.BookingResponse;
+import com.illusion.bookingservice.dto.EventDto;
 import com.illusion.bookingservice.entity.Reservation;
 import com.illusion.bookingservice.repository.ReservationRepository;
 import com.illusion.bookingservice.service.ReservationEventProducer;
 import com.illusion.bookingservice.service.RedisInventoryManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/tickets")
+@RequiredArgsConstructor
 public class TicketController {
     private static final Logger log = LoggerFactory.getLogger(TicketController.class);
     private final RedisInventoryManager inventoryManager;
     private final ReservationEventProducer eventProducer;
-
+    private final CatalogServiceClient catalogClient;
     private final ReservationRepository reservationRepository;
-
-    public TicketController(RedisInventoryManager inventoryManager,
-                            ReservationEventProducer eventProducer,
-                            ReservationRepository reservationRepository) {
-        this.inventoryManager = inventoryManager;
-        this.eventProducer = eventProducer;
-        this.reservationRepository = reservationRepository;
-    }
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy, hh:mm a");
 
     public record ReservationRequest(String eventId, String userId, Integer quantity) {}
 
@@ -90,5 +88,50 @@ public class TicketController {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+    }
+
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BookingResponse>> getUserBookings(@PathVariable String userId) {
+        List<Reservation> reservations = reservationRepository.findByUserId(userId);
+        if (reservations.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        Set<String> uniqueEventIds = reservations.stream()
+                .map(Reservation::getEventId)
+                .filter(id -> id != null && !id.trim().isEmpty())
+                .collect(Collectors.toSet());
+        Map<String, EventDto> eventMap = new HashMap<>();
+        try {
+            if (!uniqueEventIds.isEmpty()) {
+                List<EventDto> batchEvents = catalogClient.getEventsByIds(new ArrayList<>(uniqueEventIds));
+                batchEvents.forEach(event -> eventMap.put(event.id(), event));
+            }
+        } catch (Exception e) {
+            log.warn("Batch fetch from Catalog Service failed! Users will see 'Unknown Event'.", e);
+        }
+        List<BookingResponse> enrichedBookings = reservations.stream().map(res -> {
+            EventDto eventDetails = eventMap.get(res.getEventId());
+
+            String eventName = eventDetails != null ? eventDetails.name() : "Unknown Event";
+            // Put this at the top of your TicketController class (so it's only created once)
+
+
+
+            String eventDate = (eventDetails != null && eventDetails.eventDate() != null)
+                    ? eventDetails.eventDate().format(DATE_FORMATTER)
+                    : "TBD";
+
+            return new BookingResponse(
+                    res.getReservationId(),
+                    res.getEventId(),
+                    eventName,
+                    eventDate,
+                    res.getQuantity(),
+                    res.getStatus()
+            );
+        }).toList();
+
+        return ResponseEntity.ok(enrichedBookings);
     }
 }
