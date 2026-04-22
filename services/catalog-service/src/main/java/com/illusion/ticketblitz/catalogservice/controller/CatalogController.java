@@ -15,30 +15,20 @@ public class CatalogController {
 
     private final EventRepository eventRepository;
 
-    /**
-     * 1. Fetch All Events
-     * Used by the Angular frontend to display the main Event Catalog page.
-     */
+
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         List<Event> events = eventRepository.findAll();
         return ResponseEntity.ok(events);
     }
 
-    /**
-     * 2. Fetch Single Event by ID
-     * THE MISSING ENDPOINT! Used by the frontend Event Details page AND internal Feign Clients.
-     */
-    @GetMapping("/{id}/event")
-    public ResponseEntity<Event> getEventById(@PathVariable("id") String id) {
-        return eventRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{id}/capacity")
+    Integer getAvailableTickets(@PathVariable("id") String id){
+        Event event=eventRepository.findById(id).orElse(null);
+        if(event!=null)return event.getTotalQuantity();
+        else return null;
     }
-    /**
-     * 3. Fetch Multiple Events in Batch
-     * Solves the N+1 problem for the Booking Service Dashboard!
-     */
+
     @PostMapping("/batch")
     public ResponseEntity<List<Event>> getEventsByIds(@RequestBody List<String> ids) {
         List<Event> events = eventRepository.findAllById(ids);

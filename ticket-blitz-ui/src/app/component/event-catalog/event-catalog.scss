@@ -2,12 +2,15 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
+  background: #0d111a;
+  color: #ffffff;
 }
 
 .title {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 1rem;
+  color: #ffffff;
 }
 
 .event-grid {
@@ -29,46 +32,53 @@
 }
 
 .event-card {
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #1a2130;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .event-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #ffffff;
 }
 
 .event-date {
-  color: #666;
+  color: #8b94a6;
   margin-bottom: 0.5rem;
 }
 
 .event-price {
   font-size: 1.125rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.event-status {
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .buy-button {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #3b82f6;
-  color: white;
+  background: #3b82f6;
+  color: #ffffff;
+  font-weight: bold;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: 9999px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buy-button:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
 }
 
 .buy-button:disabled {
-  background-color: #9ca3af;
+  background-color: #1e2532;
+  color: #8b94a6;
   cursor: not-allowed;
 }
 
