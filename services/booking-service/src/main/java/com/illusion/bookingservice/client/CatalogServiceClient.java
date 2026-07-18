@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "catalog-service", url = "http://localhost:8083")
+@FeignClient(name = "catalog-service", url = "http://catalog-service:8083")
 public interface CatalogServiceClient {
     @GetMapping("/api/catalog/events/{id}/capacity")
     Integer getAvailableTickets(@PathVariable("id") String id);
