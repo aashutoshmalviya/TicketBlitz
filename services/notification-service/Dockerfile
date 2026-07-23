@@ -37,4 +37,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD curl -f http://localhost:8085/actuator/health || exit 1
 
 # Run the application with container-aware JVM settings
-ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

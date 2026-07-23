@@ -68,6 +68,8 @@ graph TD
     Payment_Service --> Payment_DB
     Payment_Service -->|PaymentResultEvent| Kafka
     Kafka -->|PaymentResultEvent| Notification_Service
+    Kafka -->|PaymentResultEvent| Booking_Service
+    Kafka -->|PaymentResultEvent| Catalog_Service
     Notification_Service -->|Mock Email| External_Services[(MailTrap)]
 ```
 
@@ -90,7 +92,7 @@ graph TD
 
 ## 💻 Tech Stack
 
-- **Language/Framework:** Java 21, Spring Boot 3.x (WebFlux & MVC)
+- **Language/Framework:** Java 21, Spring Boot 4.x (WebFlux & MVC)
 - **API Gateway:** Spring Cloud Gateway
 - **Frontend:** Angular 17, TypeScript, TailwindCSS
 - **Security:** Spring Security, OAuth2 Resource Server, RS256 Cryptography
@@ -133,6 +135,8 @@ MAILTRAP_USERNAME=your_mailtrap_username
 MAILTRAP_PASSWORD=your_mailtrap_password
 ```
 
+> ⚠️ **Security:** Never commit `.env` to version control. The `.gitignore` already excludes it. Use the snippet above as a `.env.example` template.
+
 ### 3. Start the Infrastructure (Docker Compose)
 
 Navigate to the `infrastructure/` directory and boot the databases and Kafka broker:
@@ -143,6 +147,8 @@ docker compose up -d
 ```
 
 ### 4. Start Microservices & Frontend
+
+> **Note:** The Booking Service requires both Redis **and** PostgreSQL. Ensure the Docker Compose infrastructure is fully healthy before starting the Booking Service.
 
 Start the services in this order using your IDE or terminal:
 
@@ -179,6 +185,7 @@ Access the UI at `http://localhost:4200`.
 - [ ] Create a Kubernetes deployment manifest (Helm charts) for cloud deployment.
 - [ ] Implement distributed tracing using Micrometer and Zipkin.
 
+
 ## 🤝 Contributing
 
 This is a portfolio project demonstrating advanced microservices patterns, showcasing Asymmetric JWT Security, Redis Atomic Operations, and Event-Driven Architecture. For questions or discussions regarding system design, feel free to open an issue!
@@ -188,5 +195,5 @@ This is a portfolio project demonstrating advanced microservices patterns, showc
 **Ashutosh Malviya**  
 _Full Stack Developer & Technical Lead_
 
-- LinkedIn <!-- Update this link -->
-- GitHub <!-- Update this link -->
+- [LinkedIn](https://www.linkedin.com/in/aashutoshmalvi/)
+- [GitHub](https://github.com/aashutoshmalviya)

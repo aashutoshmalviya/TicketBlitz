@@ -12,6 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,11 +34,14 @@ public class TicketController {
     private final ReservationRepository reservationRepository;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy, hh:mm a");
 
-    public record ReservationRequest(String eventId, String userId, Integer quantity) {}
+    public record ReservationRequest(
+            @NotBlank(message = "Event ID is required") String eventId,
+            @NotBlank(message = "User ID is required") String userId,
+            @NotNull(message = "Quantity is required") @Min(value = 1, message = "Must reserve at least 1 ticket") @Max(value = 10, message = "Cannot reserve more than 10 tickets per order") Integer quantity
+    ) {}
 
     @PostMapping("/reserve")
-
-    public ResponseEntity<Map<String, String>> reserveTicket(@RequestBody ReservationRequest request) {
+    public ResponseEntity<Map<String, String>> reserveTicket(@Valid @RequestBody ReservationRequest request) {
 
 
         String reservationId = UUID.randomUUID().toString();

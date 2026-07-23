@@ -5,7 +5,8 @@ import com.illusion.ticketblitz.catalogservice.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class CatalogController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<List<Event>> getEventsByIds(@RequestBody List<String> ids) {
+    public ResponseEntity<List<Event>> getEventsByIds(@Valid @RequestBody @NotEmpty(message = "Event IDs list cannot be empty") List<String> ids) {
         List<Event> events = eventRepository.findAllById(ids);
         return ResponseEntity.ok(events);
     }

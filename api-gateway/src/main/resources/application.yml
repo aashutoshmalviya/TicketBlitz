@@ -6,7 +6,7 @@ spring:
     name: api-gateway
   data:
     redis:
-      host: localhost
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: 6379
   cloud:
     gateway:
@@ -22,8 +22,7 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
-            allowCredentials: true # <-- Add this line
-      # ... rest of your routes ...
+            allowCredentials: true
       # --- Routing & Rate Limiting ---
       server:
         webflux:

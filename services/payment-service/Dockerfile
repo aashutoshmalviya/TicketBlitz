@@ -30,11 +30,11 @@ COPY --from=build --chown=appuser:appgroup /build/target/payment-service-*.jar a
 USER appuser
 
 # Expose the port the application runs on (as per README.md)
-EXPOSE 8085
+EXPOSE 8084
 
 # Health check to ensure the application is running correctly
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD curl -f http://localhost:8085/actuator/health || exit 1
+  CMD curl -f http://localhost:8084/actuator/health || exit 1
 
 # Run the application with container-aware JVM settings
-ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

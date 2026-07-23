@@ -39,3 +39,10 @@ yarn-error.log*
 # Operating System Files
 .DS_Store
 Thumbs.db
+
+
+
+.vscode/
+architect_review_issues.md
+architecture_reference.md
+

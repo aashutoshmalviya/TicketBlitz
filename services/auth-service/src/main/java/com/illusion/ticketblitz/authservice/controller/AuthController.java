@@ -5,6 +5,7 @@ import com.illusion.ticketblitz.authservice.dto.LoginRequest;
 import com.illusion.ticketblitz.authservice.dto.UserDto;
 import com.illusion.ticketblitz.authservice.security.CustomUserDetails;
 import com.illusion.ticketblitz.authservice.service.JwtService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             // Triggers Spring Security's authentication flow with our custom UserDetailsService
             Authentication authentication = authenticationManager.authenticate(
