@@ -1,9 +1,8 @@
 package com.illusion.ticketblitz.paymentservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import tools.jackson.databind.ObjectMapper;
-import com.illusion.ticketblitz.paymentservice.dto.PaymentResultEvent;
-import com.illusion.ticketblitz.paymentservice.dto.ReservationCreatedEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.illusion.ticketblitz.events.PaymentResultEvent;
+import com.illusion.ticketblitz.events.ReservationCreatedEvent;
 import com.illusion.ticketblitz.paymentservice.entity.PaymentRecord;
 import com.illusion.ticketblitz.paymentservice.gateway.PaymentProvider;
 import com.illusion.ticketblitz.paymentservice.gateway.PaymentResult;
@@ -28,9 +27,9 @@ public class ReservationEventConsumer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public ReservationEventConsumer(PaymentRepository paymentRepository,
-                                    PaymentProvider paymentProvider,
-                                    ObjectMapper objectMapper,
-                                    KafkaTemplate<String, String> kafkaTemplate) {
+            PaymentProvider paymentProvider,
+            ObjectMapper objectMapper,
+            KafkaTemplate<String, String> kafkaTemplate) {
         this.paymentRepository = paymentRepository;
         this.paymentProvider = paymentProvider;
         this.objectMapper = objectMapper;
@@ -66,15 +65,19 @@ public class ReservationEventConsumer {
                 log.error("Payment failed for reservation: {} - {}", event.reservationId(), result.errorMessage());
             }
             paymentRepository.save(payment);
-            log.info("status of payment ", payment.getStatus());
+            log.info("Status of payment for reservation {}: {}", event.reservationId(), payment.getStatus());
             // Publish payment result to trigger downstream processing
-            PaymentResultEvent resultEvent = new PaymentResultEvent(event.reservationId(), payment.getStatus(),event.eventId());
+            PaymentResultEvent resultEvent = new PaymentResultEvent(event.reservationId(), payment.getStatus(),
+                    event.eventId(), event.quantity());
             String resultJson = objectMapper.writeValueAsString(resultEvent);
             kafkaTemplate.send("payment-results", event.reservationId(), resultJson);
             log.info("Published payment result event for reservation: {}", event.reservationId());
 
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new RuntimeException("Fatal deserialization error in Payment Service", e);
         } catch (Exception e) {
-            log.error("Failed to process reservation event", e);
+            log.error("Failed to process reservation event in Payment Service. Triggering retry...", e);
+            throw new RuntimeException("Transient error in Payment Service, initiating retry...", e);
         }
     }
 }

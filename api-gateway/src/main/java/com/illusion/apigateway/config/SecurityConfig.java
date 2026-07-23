@@ -1,5 +1,6 @@
 package com.illusion.apigateway.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,10 +13,14 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
+
+    @Value("${app.cors.allowed-origins:http://localhost:4200,http://localhost:4000}")
+    private String allowedOrigins;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -44,8 +49,11 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Point this exactly to your Angular dev server
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                                     .map(String::trim)
+                                     .filter(s -> !s.isEmpty())
+                                     .toList();
+        configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

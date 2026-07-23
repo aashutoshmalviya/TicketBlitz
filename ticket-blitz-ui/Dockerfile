@@ -1,10 +1,10 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-COPY package*.json ./
+COPY ticket-blitz-ui/package*.json ./
 RUN npm install
 
-COPY . .
+COPY ticket-blitz-ui/ ./
 RUN npm run build
 
 FROM nginx:alpine
@@ -13,7 +13,6 @@ RUN rm -rf /usr/share/nginx/html/*
 
 COPY --from=build /app/dist/ticket-blitz-ui/browser /usr/share/nginx/html
 
-# THE FIX: Add the location /api/ block to proxy requests to the backend
 RUN echo 'server { \
     listen 4000; \
     \

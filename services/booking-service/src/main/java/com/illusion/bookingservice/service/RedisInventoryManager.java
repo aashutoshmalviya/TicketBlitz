@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
 @Service
 public class RedisInventoryManager {
 
@@ -23,6 +22,7 @@ public class RedisInventoryManager {
     private static final Logger log = LoggerFactory.getLogger(RedisInventoryManager.class);
     private final Lock cacheLock = new ReentrantLock();
     private final CatalogServiceClient catalogClient;
+
     public RedisInventoryManager(RedisTemplate<String, String> redisTemplate, CatalogServiceClient catalogClient) {
         this.redisTemplate = redisTemplate;
         this.catalogClient = catalogClient;
@@ -30,15 +30,14 @@ public class RedisInventoryManager {
         this.decrIfPositiveScript = RedisScript.of(
                 "local current = redis.call('GET', KEYS[1]) " +
                         "if not current then " +
-                        "  return -1 " + //Cache missed check key doesnt exists
+                        "  return -1 " + // Cache missed check key doesnt exists
                         "end " +
                         "if tonumber(current) > 0 then " +
                         "  redis.call('DECR', KEYS[1]) " +
-                        "  return 1 " +  // SUCCESS
+                        "  return 1 " + // SUCCESS
                         "end " +
-                        "return 0 ", //Sold out
-                Long.class
-        );
+                        "return 0 ", // Sold out
+                Long.class);
 
     }
 
@@ -46,9 +45,8 @@ public class RedisInventoryManager {
         String key = "inventory:event:" + eventId;
 
         Long result = redisTemplate.execute(
-            decrIfPositiveScript,
-            Collections.singletonList(key)
-        );
+                decrIfPositiveScript,
+                Collections.singletonList(key));
         // Cache Hit & Ticket Secured
         if (result != null && result == 1L) {
             return true;
@@ -63,6 +61,7 @@ public class RedisInventoryManager {
         // Sold out
         return false;
     }
+
     private boolean handleCacheMissAndRetry(String eventId, String redisKey) {
         // Lock thread
         cacheLock.lock();
@@ -75,7 +74,6 @@ public class RedisInventoryManager {
             // Fetch the real available capacity
             log.info("Fetching true inventory from Postgres for event {}", eventId);
             Integer availableTickets = catalogClient.getAvailableTickets(eventId);
-
 
             if (availableTickets == null) {
                 log.error("Event {} not found in Catalog Service!", eventId);
@@ -93,6 +91,7 @@ public class RedisInventoryManager {
             cacheLock.unlock();
         }
     }
+
     /**
      * Compensating transaction to release seats back into Redis if payment fails.
      */

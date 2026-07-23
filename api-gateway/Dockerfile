@@ -1,16 +1,15 @@
-
 # Stage 1: Build the application using Maven
 FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /build
 
-# Copy the pom.xml and download dependencies to leverage Docker layer caching
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copy pom.xml and download dependencies to leverage Docker layer caching
+COPY api-gateway/pom.xml ./api-gateway/pom.xml
+RUN mvn -f api-gateway/pom.xml dependency:go-offline
 
 # Copy the source code and build the application, skipping tests
-COPY src ./src
-RUN mvn package -DskipTests
+COPY api-gateway/src ./api-gateway/src
+RUN mvn -f api-gateway/pom.xml package -DskipTests
 
 # Stage 2: Create the final, smaller, and more secure runtime image
 FROM eclipse-temurin:21-jre-alpine
@@ -24,12 +23,12 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 RUN apk add --no-cache curl
 
 # Copy the built JAR from the 'build' stage with correct ownership
-COPY --from=build --chown=appuser:appgroup /build/target/api-gateway-*.jar app.jar
+COPY --from=build --chown=appuser:appgroup /build/api-gateway/target/api-gateway-*.jar app.jar
 
 # Switch to the non-root user
 USER appuser
 
-# Expose the port the application runs on (as per README.md)
+# Expose the port the application runs on
 EXPOSE 8080
 
 # Health check to ensure the application is running correctly

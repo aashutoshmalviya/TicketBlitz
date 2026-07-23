@@ -7,6 +7,12 @@ echo " Starting TicketBlitz Monorepo Build..."
 echo "========================================"
 
 # 1. Build Shared Libraries FIRST (Crucial for dependencies)
+echo "Phase 0: Building & Installing Shared Libraries (common-events)..."
+cd services/common-events
+mvn clean install -DskipTests
+cd ../..
+echo "Phase 0 Complete."
+echo "----------------------------------------"
 
 # 2. Build the API Gateway (Root Level)
 echo "Phase 1: Building API Gateway..."

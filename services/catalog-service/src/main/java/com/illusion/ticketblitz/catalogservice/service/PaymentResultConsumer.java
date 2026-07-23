@@ -1,7 +1,7 @@
 package com.illusion.ticketblitz.catalogservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.illusion.ticketblitz.catalogservice.PaymentResultEvent;
+import com.illusion.ticketblitz.events.PaymentResultEvent;
 import com.illusion.ticketblitz.catalogservice.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -34,13 +34,13 @@ public class PaymentResultConsumer {
                 // FIXED: Use event.quantity() instead of hardcoded 1!
                 int rowsUpdated = eventRepository.decrementInventorySafely(
                         event.eventId(),
-                       1
-                );
+                        1);
 
                 if (rowsUpdated > 0) {
                     log.info("Successfully deducted {} tickets for event {}", 1, event.eventId());
                 } else {
-                    log.error("CRITICAL: Failed to deduct inventory! Event {} might be sold out or invalid.", event.eventId());
+                    log.error("CRITICAL: Failed to deduct inventory! Event {} might be sold out or invalid.",
+                            event.eventId());
                 }
             } else {
                 log.info("Payment was not COMPLETED. Status: {}. Ignoring inventory deduction.", event.status());
@@ -62,7 +62,7 @@ public class PaymentResultConsumer {
      */
     @KafkaListener(topics = "payment-results.DLT", groupId = "catalog-dlq-group")
     public void consumeDeadLetterQueue(String payload,
-                                       @Header(name = "kafka_dlt_exception_message", required = false) String exceptionMessage) {
+            @Header(name = "kafka_dlt_exception_message", required = false) String exceptionMessage) {
 
         log.error("=================================================");
         log.error("☠️ CRITICAL: CATALOG SERVICE DEAD LETTER RECEIVED!");
@@ -72,7 +72,9 @@ public class PaymentResultConsumer {
         log.error("=================================================");
 
         // TODO: Future task
-        // Save this failed deduction to a database table. A background job can periodically
-        // attempt to replay these deductions to ensure the Catalog matches the Booking DB.
+        // Save this failed deduction to a database table. A background job can
+        // periodically
+        // attempt to replay these deductions to ensure the Catalog matches the Booking
+        // DB.
     }
 }

@@ -1,7 +1,7 @@
 package com.illusion.bookingservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.illusion.bookingservice.dto.ReservationCreatedEvent;
+import com.illusion.ticketblitz.events.ReservationCreatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;

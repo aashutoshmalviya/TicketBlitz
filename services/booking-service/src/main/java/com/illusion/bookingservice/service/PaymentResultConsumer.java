@@ -1,7 +1,7 @@
 package com.illusion.bookingservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.illusion.bookingservice.dto.PaymentResultEvent;
+import com.illusion.ticketblitz.events.PaymentResultEvent;
 import com.illusion.bookingservice.entity.Reservation;
 import com.illusion.bookingservice.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;

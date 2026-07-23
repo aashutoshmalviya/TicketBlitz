@@ -56,7 +56,9 @@ services:
 
   # --- Microservices (Backend) ---
   api-gateway:
-    build: ../api-gateway
+    build:
+      context: ..
+      dockerfile: api-gateway/Dockerfile
     container_name: ticketblitz-gateway
     ports:
       - "8080:8080"
@@ -73,7 +75,9 @@ services:
       - ticketblitz-network
 
   auth-service:
-    build: ../services/auth-service
+    build:
+      context: ..
+      dockerfile: services/auth-service/Dockerfile
     container_name: ticketblitz-auth
     ports:
       - "8082:8082"
@@ -95,7 +99,9 @@ services:
       - ticketblitz-network
 
   catalog-service:
-    build: ../services/catalog-service
+    build:
+      context: ..
+      dockerfile: services/catalog-service/Dockerfile
     container_name: ticketblitz-catalog
     ports:
       - "8083:8083"
@@ -117,7 +123,9 @@ services:
       - ticketblitz-network
 
   booking-service:
-    build: ../services/booking-service
+    build:
+      context: ..
+      dockerfile: services/booking-service/Dockerfile
     container_name: ticketblitz-booking
     ports:
       - "8081:8081"
@@ -143,7 +151,9 @@ services:
       - ticketblitz-network
 
   payment-service:
-    build: ../services/payment-service
+    build:
+      context: ..
+      dockerfile: services/payment-service/Dockerfile
     container_name: ticketblitz-payment
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -158,7 +168,9 @@ services:
       - ticketblitz-network
 
   notification-service:
-    build: ../services/notification-service
+    build:
+      context: ..
+      dockerfile: services/notification-service/Dockerfile
     container_name: ticketblitz-notification
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -170,7 +182,9 @@ services:
       - ticketblitz-network
 
   frontend:
-    build: ../ticket-blitz-ui
+    build:
+      context: ..
+      dockerfile: ticket-blitz-ui/Dockerfile
     container_name: ticketblitz-ui
     ports:
       - "4200:4000"

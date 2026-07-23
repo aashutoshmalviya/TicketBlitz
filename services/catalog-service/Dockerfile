@@ -1,16 +1,19 @@
-
 # Stage 1: Build the application using Maven
 FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /build
 
-# Copy the pom.xml and download dependencies to leverage Docker layer caching
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copy and install shared common-events dependency first
+COPY services/common-events ./services/common-events
+RUN mvn -f services/common-events/pom.xml clean install -DskipTests
+
+# Copy pom.xml and download dependencies to leverage Docker layer caching
+COPY services/catalog-service/pom.xml ./services/catalog-service/pom.xml
+RUN mvn -f services/catalog-service/pom.xml dependency:go-offline
 
 # Copy the source code and build the application, skipping tests
-COPY src ./src
-RUN mvn package -DskipTests
+COPY services/catalog-service/src ./services/catalog-service/src
+RUN mvn -f services/catalog-service/pom.xml package -DskipTests
 
 # Stage 2: Create the final, smaller, and more secure runtime image
 FROM eclipse-temurin:21-jre-alpine
@@ -24,12 +27,12 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 RUN apk add --no-cache curl
 
 # Copy the built JAR from the 'build' stage with correct ownership
-COPY --from=build --chown=appuser:appgroup /build/target/catalog-service-*.jar app.jar
+COPY --from=build --chown=appuser:appgroup /build/services/catalog-service/target/catalog-service-*.jar app.jar
 
 # Switch to the non-root user
 USER appuser
 
-# Expose the port the application runs on (as per README.md)
+# Expose the port the application runs on
 EXPOSE 8083
 
 # Health check to ensure the application is running correctly
